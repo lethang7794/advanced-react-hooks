@@ -4,11 +4,14 @@
 import * as React from 'react'
 
 // 🐨 here's where you'll implement your countReducer function.
+function countReducer(count, newCount) {
+  return newCount
+}
 
 function Counter({initialCount = 0, step = 1}) {
   // 🐨 replace React.useState with React.useReducer.
   // 💰 React.useReducer(countReducer, initialCount)
-  const [count, setCount] = React.useState(initialCount)
+  const [count, setCount] = React.useReducer(countReducer, initialCount)
 
   // 💰 you can write the countReducer function above so you don't have to make
   // any changes to the next two lines of code! Remember:
