@@ -6,11 +6,14 @@ import * as React from 'react'
 type State = {
   count: number
 }
-type Action = State | ((s: State) => State)
+type Action = State | ((currentState: State) => State)
 
 function countReducer(state: State, action: Action) {
   const newState = typeof action === 'function' ? action(state) : action
-  return {...state, count: newState.count}
+  return {
+    ...state,
+    ...newState,
+  }
 }
 
 function Counter({initialCount = 0, step = 5}) {
