@@ -12,21 +12,23 @@ type Action = {
 }
 
 function countReducer(state: State, action: Action) {
-  switch (action.type) {
+  const {type, step} = action
+
+  switch (type) {
     case 'increment':
       return {
         ...state,
-        count: state.count + action.step,
+        count: state.count + step,
       }
 
     case 'decrement':
       return {
         ...state,
-        count: state.count - action.step,
+        count: state.count - step,
       }
 
     default:
-      throw new Error(`Unknown action type: ${action.type}`)
+      throw new Error(`Unknown action type: ${type}`)
   }
 }
 
