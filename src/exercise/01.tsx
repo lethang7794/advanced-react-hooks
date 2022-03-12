@@ -7,22 +7,23 @@ type State = {
   count: number
 }
 
-function countReducer(prevState: State, newState: State) {
-  return {count: newState.count}
+function countReducer(state: State, action: State) {
+  return {...state, count: action.count}
 }
 
 function Counter({initialCount = 0, step = 5}) {
   const [state, setState] = React.useReducer(countReducer, {
     count: initialCount,
   })
+  const {count} = state
 
-  const increment = () => setState({count: state.count + step})
-  const decrement = () => setState({count: state.count - step})
+  const increment = () => setState({count: count + step})
+  const decrement = () => setState({count: count - step})
 
   return (
     <div className="counter">
       <button onClick={decrement}>⬅️</button>
-      {state.count}
+      {count}
       <button onClick={increment}>➡️</button>
     </div>
   )
