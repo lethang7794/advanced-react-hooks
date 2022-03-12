@@ -6,24 +6,38 @@ import * as React from 'react'
 type State = {
   count: number
 }
-type Action = State | ((currentState: State) => State)
+type Action = {
+  type: 'increment' | 'decrement'
+  step: number
+}
 
 function countReducer(state: State, action: Action) {
-  const newState = typeof action === 'function' ? action(state) : action
-  return {
-    ...state,
-    ...newState,
+  switch (action.type) {
+    case 'increment':
+      return {
+        ...state,
+        count: state.count + action.step,
+      }
+
+    case 'decrement':
+      return {
+        ...state,
+        count: state.count - action.step,
+      }
+
+    default:
+      throw new Error(`Unknown action type: ${action.type}`)
   }
 }
 
 function Counter({initialCount = 0, step = 5}) {
-  const [state, setState] = React.useReducer(countReducer, {
+  const [state, dispatch] = React.useReducer(countReducer, {
     count: initialCount,
   })
   const {count} = state
 
-  const increment = () => setState(state => ({count: state.count + step}))
-  const decrement = () => setState(state => ({count: state.count - step}))
+  const increment = () => dispatch({type: 'increment', step})
+  const decrement = () => dispatch({type: 'decrement', step})
 
   return (
     <div className="counter">
