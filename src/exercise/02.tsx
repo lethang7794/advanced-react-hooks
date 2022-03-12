@@ -59,10 +59,7 @@ function asyncReducer<DataType>(
   }
 }
 
-function useAsync<DataType>(
-  asyncCallback: () => Promise<DataType> | null,
-  dependencies: Array<unknown>,
-) {
+function useAsync<DataType>(asyncCallback: () => Promise<DataType> | null) {
   const [state, dispatch] = React.useReducer<
     React.Reducer<AsyncState<DataType>, AsyncAction<DataType>>
   >(asyncReducer, {
@@ -88,19 +85,20 @@ function useAsync<DataType>(
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies)
+  }, [asyncCallback])
 
   return state
 }
 
 function PokemonInfo({pokemonName}) {
-  const state = useAsync<PokemonData>(() => {
+  const asyncCallback = React.useCallback(() => {
     if (!pokemonName) {
       return
     }
     return fetchPokemon(pokemonName)
   }, [pokemonName])
 
+  const state = useAsync<PokemonData>(asyncCallback)
   const {data, status, error} = state
 
   switch (status) {
