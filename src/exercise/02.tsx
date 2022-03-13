@@ -103,12 +103,20 @@ function PokemonInfo({pokemonName}) {
   const state = useAsync<PokemonData>()
   const {data, status, error, run} = state
 
+  
+
   React.useEffect(() => {
     if (!pokemonName) {
       return
     }
-    const promise = fetchPokemon(pokemonName, {delay: Math.random() * 5000})
+    const abortController = new AbortController()
+    const promise = fetchPokemon(pokemonName, {
+      signal: abortController.signal,
+      delay: Math.random() * 1000,
+    })
     run(promise)
+
+    return () => abortController.abort()
   }, [pokemonName, run])
 
   switch (status) {
