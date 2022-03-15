@@ -3,21 +3,30 @@
 
 import * as React from 'react'
 
+type MessagesImperativeAPI = {
+  scrollToTop: () => void
+  scrollToBottom: () => void
+}
+
 type Message = {id: string; author: string; content: string}
 
 // 🐨 wrap this in a React.forwardRef and accept `ref` as the second argument
-function MessagesDisplay({messages}: {messages: Array<Message>}) {
+
+const MessagesDisplay = React.forwardRef<
+  MessagesImperativeAPI,
+  {messages: Array<Message>}
+>(function MessagesDisplay({messages}, ref) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   React.useLayoutEffect(() => {
     scrollToBottom()
   })
 
-  // 💰 you're gonna want this as part of your imperative methods
-  // function scrollToTop() {
-  //   if (!containerRef.current) return
-  //   containerRef.current.scrollTop = 0
-  // }
+  function scrollToTop() {
+    if (!containerRef.current) return
+    containerRef.current.scrollTop = 0
+  }
+
   function scrollToBottom() {
     if (!containerRef.current) return
     containerRef.current.scrollTop = containerRef.current.scrollHeight
@@ -25,6 +34,10 @@ function MessagesDisplay({messages}: {messages: Array<Message>}) {
 
   // 🐨 call useImperativeHandle here with your ref and a callback function
   // that returns an object with scrollToTop and scrollToBottom
+  React.useImperativeHandle(ref, () => ({
+    scrollToTop,
+    scrollToBottom,
+  }))
 
   return (
     <div ref={containerRef} role="log">
@@ -36,7 +49,7 @@ function MessagesDisplay({messages}: {messages: Array<Message>}) {
       ))}
     </div>
   )
-}
+})
 
 function App() {
   const messageDisplayRef = React.useRef(null)
@@ -64,7 +77,7 @@ function App() {
         <button onClick={scrollToTop}>scroll to top</button>
       </div>
       {/* 🐨 add ref prop here */}
-      <MessagesDisplay messages={messages} />
+      <MessagesDisplay ref={messageDisplayRef} messages={messages} />
       <div>
         <button onClick={scrollToBottom}>scroll to bottom</button>
       </div>
